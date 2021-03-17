@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">ToDo App</string>
+
+    <string name="search_hint">Search for a project</string>
+
+    <string name="nav_search">Search</string>
+    <string name="nav_completed_projects">Completed Projects</string>
+    <string name="nav_settings">Settings</string>
+
+    <string name="profile_photo">Profile photo</string>
+    <string name="photo_button_key" translatable="false">pref_photo_button</string>
+    <string name="btn_camera_text">Take a new profile photo</string>
+
+    <string name="pref_show_incomplete_key" translatable="false">pref_show_incomplete</string>
+    <string name="pref_show_incomplete_title">Show Only Incomplete</string>
+    <string name="pref_show_incomplete_value" translatable="false">show_incomplete</string>
+    <string name="pref_show_incomplete_entry">Check to show only incomplete projects</string>
+    <string name="pref_show_incomplete_default_value" translatable="false">false</string>
+
 </resources>
