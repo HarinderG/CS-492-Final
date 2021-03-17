@@ -3,6 +3,7 @@
     package="com.example.todolistapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoListApp">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name="com.example.todolistapp.SettingsActivity"
+            android:parentActivityName="com.example.todolistapp.MainActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.ToDoListApp.NoActionBar"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
