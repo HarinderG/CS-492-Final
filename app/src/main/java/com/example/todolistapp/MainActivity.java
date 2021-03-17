@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.todolistapp.data.Project;
+import com.example.todolistapp.data.ProjectData;
+import com.example.todolistapp.data.Results;
 import com.example.todolistapp.utils.NetworkUtils;
 import com.example.todolistapp.utils.TodoistUtils;
 import com.google.android.material.navigation.NavigationView;
@@ -34,12 +38,14 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, ProjectAdapter.OnProjectItemClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private EditText searchBox;
     private RecyclerView projectListRV;
     private ProjectAdapter projectAdapter;
+    private ResultsViewModel resultsViewModel;
 
     private DrawerLayout drawerLayout;
 
@@ -54,11 +60,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 //        Project List RV setup
         this.projectListRV = findViewById(R.id.rv_project_list);
-        this.projectAdapter = new ProjectAdapter();
+        this.projectAdapter = new ProjectAdapter(this);
         this.projectListRV.setAdapter(this.projectAdapter);
         this.projectListRV.setLayoutManager(new LinearLayoutManager(this));
         this.projectListRV.setHasFixedSize(true);
         this.projectListRV.setItemAnimator(new DefaultItemAnimator());
+
+        this.resultsViewModel = new ViewModelProvider(this).get(ResultsViewModel.class);
+
+        this.loadProject();
+
+        this.resultsViewModel.getResults().observe(
+                this,
+                new Observer<Results>() {
+                    @Override
+                    public void onChanged(Results results) {
+                        projectAdapter.updateProjectList(results);
+                    }
+                }
+        );
 
         NavigationView navigationView = findViewById(R.id.nv_nav_drawer);
         navigationView.setNavigationItemSelectedListener(this);
@@ -70,12 +90,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ProjectSearchTask().execute("url");
-            }
-        });
+//        search_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                new ProjectSearchTask().execute("url");
+//            }
+//        });
+    }
+
+    private void loadProject() {
+        this.resultsViewModel.loadProjects();
     }
 
     @Override
@@ -97,8 +121,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             case R.id.nav_completed_projects:
                 Log.d(TAG, "Completed Projects Activity");
-//                Intent completedProjectsIntent = new Intent(this, CompletedProject.class);
-//                startActivity(completedProjectsIntent);
+                Intent completedProjectsIntent = new Intent(this, CompletedProjects.class);
+                startActivity(completedProjectsIntent);
                 return true;
             case R.id.nav_settings:
                 Intent settingsIntent = new Intent(this, SettingsActivity.class);
@@ -118,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    // Response to taken photo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -129,27 +154,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public class ProjectSearchTask extends AsyncTask<String,Void,String> {
-        @Override
-        protected String doInBackground(String... params) {
-            String results = null;
-            try {
-                results = NetworkUtils.doHttpGet();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-            return results;
-        }
-
-        @Override
-        protected void onPostExecute(String res) {
-            if (res != null) {
-                ArrayList<Project> projectList = TodoistUtils.parseProjects(res);
-                for (int i = 0; i < projectList.size(); i++) {
-                    projectAdapter.updateProjectList(projectList.get(i));
-                }
-                Log.d(TAG, "=== " + projectList.get(0).name);
-            }
-        }
+    @Override
+    public void onProjectItemClick(ProjectData projectData) {
+        Log.d(TAG, "Project clicked: name=" + projectData.getName());
+        Intent intent = new Intent(this, ProjectDetailActivity.class);
+        intent.putExtra(ProjectDetailActivity.EXTRA_PROJECT_DATA, projectData);
+        startActivity(intent);
     }
+
+//    public class ProjectSearchTask extends AsyncTask<String,Void,String> {
+//        @Override
+//        protected String doInBackground(String... params) {
+//            String results = null;
+//            try {
+//                results = NetworkUtils.doHttpGet();
+//            }catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return results;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String res) {
+//            if (res != null) {
+//                ArrayList<Project> projectList = TodoistUtils.parseProjects(res);
+//                for (int i = 0; i < projectList.size(); i++) {
+//                    projectAdapter.updateProjectList(projectList.get(i));
+//                }
+//                Log.d(TAG, "=== " + projectList.get(0).name);
+//            }
+//        }
+//    }
 }
