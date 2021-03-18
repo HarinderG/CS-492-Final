@@ -16,6 +16,12 @@
             android:name="com.example.todolistapp.SettingsActivity"
             android:parentActivityName="com.example.todolistapp.MainActivity" />
         <activity
+            android:name="com.example.todolistapp.CompletedProjects"
+            android:parentActivityName="com.example.todolistapp.MainActivity" />
+        <activity
+            android:name="com.example.todolistapp.ProjectDetailActivity"
+            android:parentActivityName="com.example.todolistapp.MainActivity" />
+        <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.ToDoListApp.NoActionBar"
             android:launchMode="singleTop">

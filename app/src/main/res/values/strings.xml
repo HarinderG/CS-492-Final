@@ -2,6 +2,7 @@
     <string name="app_name">ToDo App</string>
 
     <string name="search_hint">Search for a project</string>
+    <string name="no_complete">Looks like you haven\'t completed any projects yet!</string>
 
     <string name="nav_search">Search</string>
     <string name="nav_completed_projects">Completed Projects</string>
@@ -10,6 +11,10 @@
     <string name="profile_photo">Profile photo</string>
     <string name="photo_button_key" translatable="false">pref_photo_button</string>
     <string name="btn_camera_text">Take a new profile photo</string>
+
+    <string name="action_complete">Toggle complete</string>
+    <string name="action_share">Share</string>
+    <string name="share_project_text">Check out this Project! %1$s</string>
 
     <string name="pref_show_incomplete_key" translatable="false">pref_show_incomplete</string>
     <string name="pref_show_incomplete_title">Show Only Incomplete</string>
